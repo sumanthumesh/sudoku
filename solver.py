@@ -86,13 +86,14 @@ class Solver:
             if(not(x in memory)):
                 return x
         return None
+    
     def solve(self):
         memory = []
         for i in range(81):
             memory.append([])
         stack = []
         stack.append([0,0])
-        count = 0
+        self.num_guesses = 0
         while (peek_stack(stack)[0] < 9 and peek_stack(stack)[1] < 9):
             current_pos = peek_stack(stack)
             r = current_pos[0]
@@ -156,9 +157,70 @@ class Solver:
                 stack.append([next_r,next_c])
                 if(self.DEBUG == True):
                     print("Pushed:("+str(next_r)+","+str(next_c)+")")
-            count += 1
+            self.num_guesses += 1
         if(self.DEBUG == True):
-            print("Iterations:"+str(count)) 
+            print("Iterations:"+str(self.num_guesses))
+            
+    def checkBestCase(self):
+        least_num_poss = 9
+        best_poss = [-1,-1]
+        for r in range(9):
+            for c in range(9):
+                if(self.F[r][c]==0):
+                    possibilities = self.allPossible(r,c)
+                    num_poss = len(possibilities)
+                    if(num_poss > 0 and num_poss < least_num_poss):
+                        least_num_poss = num_poss
+                        best_poss = [r,c]
+        return best_poss
+    
+    def checkFinished(self):
+        for r in range(9):
+            for c in range(9):
+                if(self.F[r][c]==0):
+                    return False
+        return True
+    
+    def solve2(self):
+        memory = []
+        for i in range(81):
+            memory.append([])
+        stack = []
+        best_poss = self.checkBestCase()
+        stack.append(best_poss)
+        self.num_guesses = 0
+        while(not(self.checkFinished())):
+            current_pos = peek_stack(stack)
+            r = current_pos[0]
+            c = current_pos[1]
+            if(self.DEBUG == True):
+                print("Pos:("+str(r)+","+str(c)+")")
+            possibles = self.allPossible(r,c)
+            if(len(possibles) == 0):
+                temp = stack.pop()
+                memory[two2one(r,c)]=[]
+                if(self.DEBUG == True):
+                    print("Popped:",end='')
+                    print(temp)
+            else:
+                choice = self.choose(possibles,memory[two2one(r,c)])
+                self.F[r][c] = choice
+                self.num_guesses += 1
+                if(self.DEBUG == True):
+                    print("Possibles:",end='')
+                    print(possibles)
+                    print("Memory:",end='')
+                    print(memory[two2one(r,c)])
+                    print("Choice:" + str(choice))
+                memory[two2one(r,c)].append(choice)
+                best_poss = self.checkBestCase()
+                stack.append(best_poss)
+                if(self.DEBUG == True):
+                    print("Pushed:",end='')
+                    print(best_poss)
+            if(self.DEBUG==True):
+                self.display()
+
 def two2one(r,c):
     return r*9+c
 
