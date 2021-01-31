@@ -81,7 +81,7 @@ class Solver:
         return possibles
     
     def choose(self,possibles,memory):
-        random.shuffle(possibles)
+        #random.shuffle(possibles)
         for x in possibles:
             if(not(x in memory)):
                 return x
@@ -157,7 +157,7 @@ class Solver:
                 stack.append([next_r,next_c])
                 if(self.DEBUG == True):
                     print("Pushed:("+str(next_r)+","+str(next_c)+")")
-            self.num_guesses += 1
+                self.num_guesses += 1
             
     def checkBestCase(self):
         least_num_poss = 9
