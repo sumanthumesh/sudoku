@@ -87,7 +87,7 @@ class Solver:
                 return x
         return None
     
-    def solve(self):
+    def solve1(self):
         memory = []
         for i in range(81):
             memory.append([])
@@ -158,8 +158,6 @@ class Solver:
                 if(self.DEBUG == True):
                     print("Pushed:("+str(next_r)+","+str(next_c)+")")
             self.num_guesses += 1
-        if(self.DEBUG == True):
-            print("Iterations:"+str(self.num_guesses))
             
     def checkBestCase(self):
         least_num_poss = 9
